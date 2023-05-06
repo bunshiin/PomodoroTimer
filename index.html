@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pomodoro Timer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: black;
+        }
+        
+        h1 {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+        
+        #timer {
+            font-size: 100px;
+            font-weight: bold;
+            margin-bottom: 50px;
+            color: green;
+        }
+        
+        #buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 120px;
+        }
+        
+        button {
+            font-size: 50px;
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pomodoro Timer ⏳</h1>
+    <div id="timer">25:00</div>
+    <div id="buttons">
+        <button onclick="playClickSound()" id="start-button">Başla</button>
+        <audio id="click-sound" src="Boxing Bell Sound Effect.mp3"></audio>
+        <button id="pause-button">Durdur</button>
+        <button id="reset-button">Sıfırla</button>
+    </div>
+    <script>
+        // zamanlayıcı kodları
+
+        let minutes = 25;
+        let seconds = 0;
+        let isTimerRunning = false;
+
+
+
+        let timer = document.getElementById('timer');
+        let startButton = document.getElementById('start-button');
+        let pauseButton = document.getElementById('pause-button');
+        let resetButton = document.getElementById('reset-button');
+        let time = 25 * 60; // saniye cinsinden zaman
+        let timerId;
+
+        function playClickSound() {
+            let audio = document.getElementById('click-sound');
+            audio.currentTime = 0;
+            audio.play();
+        }
+
+        function startTimer() {
+            timerId = setInterval(updateTimer, 1000);
+            startButton.disabled = true;
+            pauseButton.disabled = false;
+            resetButton.disabled = true;
+        }
+
+        function pauseTimer() {
+            clearInterval(timerId);
+            startButton.disabled = false;
+            pauseButton.disabled = true;
+            resetButton.disabled = false;
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            time = 25 * 60;
+            updateTimerDisplay();
+            startButton.disabled = false;
+            pauseButton.disabled = true;
+            resetButton.disabled = true;
+        }
+
+        function updateTimer() {
+            let display = document.getElementById('timer');
+            if (seconds == 0) {
+                if (minutes == 0) {
+                    clearInterval(timer);
+                    isTimerRunning = false;
+                    display.classList.remove('warning');
+                    display.classList.remove('alert');
+                    return;
+                } else {
+                    minutes--;
+                    seconds = 59;
+                }
+            } else {
+                seconds--;
+            }
+            if (minutes < 5) {
+                display.style.color == "red";
+            } else if (minutes < 10) {
+                display.classList.add('warning');
+                display.classList.remove('alert');
+            } else {
+                display.classList.remove('warning');
+                display.classList.remove('alert');
+            }
+            display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // buton kodları
+        startButton.addEventListener('click', startTimer);
+        pauseButton.addEventListener('click', pauseTimer);
+        resetButton.addEventListener('click', resetTimer);
+
+        pauseButton.disabled = true;
+        resetButton.disabled = true;
+    </script>
+</body>
+
+</html>
